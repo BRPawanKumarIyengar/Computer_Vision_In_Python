@@ -1,26 +1,33 @@
 # The code detects a single color based on upper and lower RGB count from a variety of colors
 import cv2 as Pawan_Camera_Capture
 import numpy as Pawan_Numpy_Module
-import time as Samay_in_Seconds
 
-Chitra = Pawan_Camera_Capture.imread('Pawan_Colour.PNG')
 
-fontFace = Pawan_Camera_Capture.FONT_HERSHEY_TRIPLEX
-fontScale = 1
-fontColor = (0, 255, 255)
+cap = Pawan_Camera_Capture.VideoCapture(0)
 
-Lower_Red = Pawan_Numpy_Module.array([178,0,179])
-Upper_Red = Pawan_Numpy_Module.array([255,255,255])
-Parivartit_Chitra = Pawan_Camera_Capture.cvtColor(Chitra,Pawan_Camera_Capture.COLOR_BGR2HSV)
-Pawan_Red_Filter = Pawan_Camera_Capture.inRange(Parivartit_Chitra, Lower_Red, Upper_Red)
+while(1):
 
-Pawan_Camera_Capture.imshow('As seeen in Camera', Chitra)
-Pawan_Camera_Capture.imshow('Only See Red', Pawan_Red_Filter)
+    # Take each frame
+    ret, Chitra = cap.read()
 
-while True:
-	Pawan_Camera_Capture.imshow('As seeen in Camera', Chitra)
-	Pawan_Camera_Capture.imshow('Only See King', Parivartit_Chitra)
-	if Pawan_Camera_Capture.waitKey(10) & 0xFF==ord('q'):
-		break
-		
+    # Convert BGR to HSV
+    hsv = Pawan_Camera_Capture.cvtColor(Chitra, Pawan_Camera_Capture.COLOR_BGR2HSV)
+
+    # define range of blue color in HSV
+    lower_blue = Pawan_Numpy_Module.array([110,50,50])
+    upper_blue = Pawan_Numpy_Module.array([130,255,255])
+
+    # Threshold the HSV image to get only blue colors
+    mask = Pawan_Camera_Capture.inRange(hsv, lower_blue, upper_blue)
+
+    # Bitwise-AND mask and original image
+    res = Pawan_Camera_Capture.bitwise_and(Chitra,Chitra, mask= mask)
+
+    Pawan_Camera_Capture.imshow('Original Chitra',Chitra)
+    Pawan_Camera_Capture.imshow('First Level Filter',mask)
+    Pawan_Camera_Capture.imshow('Second Level Filter',res)
+    k = Pawan_Camera_Capture.waitKey(0) & 0xFF("q")
+    if k == 27:
+        break
+
 Pawan_Camera_Capture.destroyAllWindows()
